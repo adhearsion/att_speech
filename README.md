@@ -1,5 +1,7 @@
 # att_speech
 
+![Build Status](https://secure.travis-ci.org/jsgoecke/att_speech.png)
+
 A Ruby library for consuming the AT&T [Speech API](https://developer.att.com/developer/apiDetailPage.jsp?passedItemId=10700023) for speech to text. API details may be found [here](http://developer.att.com/developer/apiDetailPage.jsp?passedItemId=10900039).
 
 ## Installation
