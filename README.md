@@ -1,14 +1,14 @@
-= att_speech
+# att_speech
 
 A Ruby library for consuming the AT&T [Speech API](https://developer.att.com/developer/apiDetailPage.jsp?passedItemId=10700023) for speech to text. API details may be found [here](http://developer.att.com/developer/apiDetailPage.jsp?passedItemId=10900039).
 
-== Installation
+## Installation
 
 ```
 gem install att_speech
 ```
 
-== Usage
+## Usage
 
 ```ruby
 require 'att_speech'
@@ -20,17 +20,15 @@ att_speech = ATTSpeech.new(api_key, secret_key)
 
 # Block operation
 p att_speech.speech_to_text('bostonSeltics.wav', type='audio/wav')
-
 #<Hashie::Mash recognition=#<Hashie::Mash n_best=#<Hashie::Mash confidence=1 grade="accept" hypothesis="Boston celtics." language_id="en-us" result_text="Boston celtics." word_scores=[1, 1] words=["Boston", "celtics."]> response_id="452d848c6d1a4be3f2bc987e5201ae38">>
 
 # Non-blocking operation with a future, if you have a longer file that requires more processing time
 future = att_speech.future(:speech_to_text, 'bostinSeltics.wav', type='audio/wav')
 p future.value
-
 #<Hashie::Mash recognition=#<Hashie::Mash n_best=#<Hashie::Mash confidence=1 grade="accept" hypothesis="Boston celtics." language_id="en-us" result_text="Boston celtics." word_scores=[1, 1] words=["Boston", "celtics."]> response_id="452d848c6d1a4be3f2bc987e5201ae38">>
 ```
 
-== Copyright
+## Copyright
 
 Copyright (c) 2012 Jason Goecke. See LICENSE.txt for further details.
 
