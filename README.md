@@ -20,7 +20,7 @@ secret_key = 'bar'
 
 att_speech = ATTSpeech.new(api_key, secret_key)
 
-# Block operation
+# Blocking operation
 p att_speech.speech_to_text('bostonSeltics.wav', type='audio/wav')
 #<Hashie::Mash recognition=#<Hashie::Mash n_best=#<Hashie::Mash confidence=1 grade="accept" hypothesis="Boston celtics." language_id="en-us" result_text="Boston celtics." word_scores=[1, 1] words=["Boston", "celtics."]> response_id="452d848c6d1a4be3f2bc987e5201ae38">>
 
