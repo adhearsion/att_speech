@@ -1,7 +1,7 @@
 require 'att_speech'
 
-api_key    = 'your api key'
-secret_key = 'your secret key'
+api_key    = ENV['ATT_SPEECH_KEY']
+secret_key = ENV['ATT_SPEECH_SECRET']
 
 att_speech = ATTSpeech.new(api_key, secret_key)
 
@@ -18,4 +18,6 @@ p future.value
 # Note: Remember, this is a concurrent operation so don't pass self and avoid mutable objects in the block 
 # from the calling context, better to have discreet actions contained in the block, such as inserting in a 
 # datastore
-att_speech.speech_to_text!('spec/spec_helper.rb') { |transcription| p transcription }
+sleep 2
+att_speech.speech_to_text!(file_contents) { |transcription| p transcription }
+sleep 5
