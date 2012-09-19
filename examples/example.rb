@@ -5,8 +5,10 @@ secret_key = ENV['ATT_SPEECH_SECRET']
 
 att_speech = ATTSpeech.new(api_key, secret_key)
 
-# Blocking operation
+# Read the audio file contents
 file_contents = File.read(File.expand_path(File.dirname(File.dirname(__FILE__))) + "/bostonSeltics.wav")
+
+# Blocking operation
 p att_speech.speech_to_text(file_contents, type='audio/wav')
 
 # Non-blocking operation with a future, if you have a longer file that requires more processing time
