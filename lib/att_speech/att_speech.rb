@@ -33,6 +33,7 @@ class ATTSpeech
 	# @param [String] file_contents to be processed
 	# @param [String] type of file to be processed, may be audio/wav, application/octet-stream or audio/amr
 	# @param [String] speech_context to use to evaluate the audio Generic, UVerseEPG, BusinessSearch, Websearch, SMS, Voicemail,  QuestionAndAnswer
+	# @param [Block] block to be called when the transcription completes
 	#
 	# @return [Hash] the resulting response from the AT&T Speech API
 	def speech_to_text(file_contents, type='audio/wav', speech_context='Generic', &block)
