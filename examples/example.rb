@@ -13,3 +13,9 @@ p att_speech.speech_to_text(file_contents, type='audio/wav')
 sleep 2
 future = att_speech.future(:speech_to_text, file_contents, type='audio/wav')
 p future.value
+
+# Non-blocking operation that will call a block when the transcrption is returned
+# Note: Remember, this is a concurrent operation so don't pass self and avoid mutable objects in the block 
+# from the calling context, better to have discreet actions contained in the block, such as inserting in a 
+# datastore
+att_speech.speech_to_text!('spec/spec_helper.rb') { |transcription| p transcription }

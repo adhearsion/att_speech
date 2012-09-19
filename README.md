@@ -28,6 +28,13 @@ p att_speech.speech_to_text('bostonSeltics.wav', type='audio/wav')
 future = att_speech.future(:speech_to_text, 'bostinSeltics.wav', type='audio/wav')
 p future.value
 #<Hashie::Mash recognition=#<Hashie::Mash n_best=#<Hashie::Mash confidence=1 grade="accept" hypothesis="Boston celtics." language_id="en-us" result_text="Boston celtics." word_scores=[1, 1] words=["Boston", "celtics."]> response_id="452d848c6d1a4be3f2bc987e5201ae38">>
+
+# Non-blocking operation that will call a block when the transcrption is returned
+# Note: Remember, this is a concurrent operation so don't pass self and avoid mutable objects in the block 
+# from the calling context, better to have discreet actions contained in the block, such as inserting in a 
+# datastore or POSTing to a REST webservice as a callback
+att_speech.speech_to_text!('spec/spec_helper.rb') { |transcription| p transcription }
+#<Hashie::Mash recognition=#<Hashie::Mash n_best=#<Hashie::Mash confidence=1 grade="accept" hypothesis="Boston celtics." language_id="en-us" result_text="Boston celtics." word_scores=[1, 1] words=["Boston", "celtics."]> response_id="452d848c6d1a4be3f2bc987e5201ae38">>
 ```
 
 ## Copyright

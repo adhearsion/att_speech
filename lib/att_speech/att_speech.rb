@@ -13,6 +13,7 @@ class ATTSpeech
 	#
 	# @return [Object] an instance of ATTSpeech
 	def initialize(api_key, secret_key, base_url='https://api.att.com')
+		@signaled      = false
 		@api_key 		   = api_key
 		@secret_key    = secret_key
 		@base_url      = base_url
@@ -34,7 +35,7 @@ class ATTSpeech
 	# @param [String] speech_context to use to evaluate the audio Generic, UVerseEPG, BusinessSearch, Websearch, SMS, Voicemail,  QuestionAndAnswer
 	#
 	# @return [Hash] the resulting response from the AT&T Speech API
-	def speech_to_text(file_contents, type='audio/wav', speech_context='Generic')
+	def speech_to_text(file_contents, type='audio/wav', speech_context='Generic', &block)
 		resource = "/rest/1/SpeechToText"
 		
 		if type == "application/octet-stream"
@@ -49,14 +50,16 @@ class ATTSpeech
 									                          :Content_Type              => type, 
 									                          :Accept                    => 'application/json'
 									                          
-			process_response(response)
+			result = process_response(response)
+			block.call result if block_given?
+			result
 		rescue => e
 			raise RuntimeError, e.to_s
 		end
 	end
 	
 	private
-	
+		
 	##
 	# Creates the Faraday connection object
 	def create_connection
