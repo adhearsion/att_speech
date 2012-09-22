@@ -2,21 +2,41 @@ class ATTSpeech
 	include Celluloid
 	Celluloid.logger = nil
 	
-	attr_reader :api_key, :secret_key, :access_token, :refresh_token
+	attr_reader :api_key, :secret_key, :access_token, :refresh_token, :base_url, :ssl_verify
 	
 	##
 	# Creates an ATTSpeech object
 	#
-	# @param [String] api_key
-	# @param [String] secret_key
-	# @param [String] base_url
+	# @overload initialize(args)
+	#   @param [Hash] args the options to intantiate with
+	#   @option args [String] :api_key the AT&T Speech API Key
+	#   @option args [String] :secret_key the AT&T Speech API Secret Key
+	#   @option args [String] :base_url the url for the AT&T Speech API, default is 'https://api.att.com'
+	#   @option args [Boolean] :ssl_verify determines if the peer Cert is verified for SSL, default is true
+	# @overload initialize(api_key, secret_key, base_url='https://api.att.com')
+	#   @param [String] api_key the AT&T Speech API Key
+	#   @param [String] secret_key the AT&T Speech API Secret Key
+	#   @param [String] base_url, the url for the AT&T Speech API, default is 'https://api.att.com'
+	#   @param [Boolean] ssl_verify determines if the peer Cert is verified for SSL, default is true
 	#
 	# @return [Object] an instance of ATTSpeech
-	def initialize(api_key, secret_key, base_url='https://api.att.com')
-		@signaled      = false
-		@api_key 		   = api_key
-		@secret_key    = secret_key
-		@base_url      = base_url
+	def initialize(*args)
+		raise ArgumentError, "Requres at least the api_key and secret_key when instatiating" if args.size == 0
+		
+		base_url   = 'https://api.att.com'
+		
+		if args.size == 1 && args[0].instance_of?(Hash)
+			@api_key    = args[0][:api_key]
+			@secret_key = args[0][:secret_key]
+			@base_url   = args[0][:base_url]   || base_url
+			set_ssl_verify args[0][:ssl_verify]
+		else
+			@api_key 		= args[0]
+			@secret_key = args[1]
+			@base_url   = args[2] || base_url
+			set_ssl_verify args[3]
+		end			
+		
 		@grant_type    = 'client_credentials'
 		@scope         = 'SPEECH'
 		@access_token  = ''
@@ -64,7 +84,7 @@ class ATTSpeech
 	##
 	# Creates the Faraday connection object
 	def create_connection
-		@connection = Faraday.new(:url => @base_url) do |faraday|
+		@connection = Faraday.new(:url => @base_url, :ssl => { :verify => @ssl_verify }) do |faraday|
 			faraday.headers['Accept'] = 'application/json'
 			faraday.adapter           Faraday.default_adapter
 		end
@@ -104,6 +124,18 @@ class ATTSpeech
 	# @return [Object] a Hashie::Mash object
 	def process_response(response)
 		Hashie::Mash.new(underscore_hash(JSON.parse(response.body)))
+	end
+	
+	##
+	# Sets the ssl_verify option
+	#
+	# @param [Boolean] ssl_verify the variable to set
+	def set_ssl_verify(ssl_verify)
+		if ssl_verify == false
+			@ssl_verify =  false
+		else
+			@ssl_verify = true
+		end
 	end
 	
 	##

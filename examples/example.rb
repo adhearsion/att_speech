@@ -1,9 +1,7 @@
 require 'att_speech'
 
-api_key    = ENV['ATT_SPEECH_KEY']
-secret_key = ENV['ATT_SPEECH_SECRET']
-
-att_speech = ATTSpeech.new(api_key, secret_key)
+att_speech = ATTSpeech.new({ :api_key    => ENV['ATT_SPEECH_KEY'], 
+	                           :secret_key => ENV['ATT_SPEECH_SECRET'] })
 
 # Read the audio file contents
 file_contents = File.read(File.expand_path(File.dirname(File.dirname(__FILE__))) + "/bostonSeltics.wav")
