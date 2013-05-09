@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 gem "faraday", ">= 0.8.1"
-gem "celluloid", ">= 0.11.1"
-gem "hashie", ">=1.2.0"
+gem "celluloid", ">= 0.11.1", "< 0.14.0"
+gem "hashie", ">= 1.2.0"
 gem "activesupport"
 
 group :development do
