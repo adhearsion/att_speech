@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jason Goecke, Peter Wilson"]
   s.date = "2013-05-09"
-  s.description = "A Ruby library for consuming the AT&T Speech API https://developer.att.com/developer/forward.jsp?passedItemId=12500023 for speech->text, and text->speech."
+  s.description = "A Ruby library for consuming v3 of the AT&T Speech API for speech->text, and text->speech. Takes in either .wav or specific other audio files, and returns a text string of the spoken words. Can also take in either a text string or .txt file and returns a string of bytes from which a .wav file can be created of the spoken text."
   s.email = "jason@goecke.net"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     "att_speech.gemspec",
     "examples/bostonSeltics.wav",
     "examples/example.rb",
+    "examples/helloWorld.txt",
     "lib/att_speech.rb",
     "lib/att_speech/att_speech.rb",
     "lib/att_speech/version.rb",
@@ -39,7 +40,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
-  s.summary = "A Ruby library for consuming the AT&T Speech API for speech->text, and text->speech."
+  s.summary = "A Ruby library for consuming the AT&T Speech API https://developer.att.com/developer/forward.jsp?passedItemId=12500023 for speech->text, and text->speech."
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

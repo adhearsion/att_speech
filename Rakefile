@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "att_speech"
   gem.homepage = "http://github.com/jsgoecke/att_speech"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{A Ruby library for consuming the AT&T Speech API https://developer.att.com/developer/forward.jsp?passedItemId=12500023 for speech->text, and text->speech.}
+  gem.description = %Q{A Ruby library for consuming v3 of the AT&T Speech API for speech->text, and text->speech. Takes in either .wav or specific other audio files, and returns a text string of the spoken words. Can also take in either a text string or .txt file and returns a string of bytes from which a .wav file can be created of the spoken text.}
   gem.email = "jason@goecke.net"
   gem.authors = ["Jason Goecke, Peter Wilson"]
   # dependencies defined in Gemfile
