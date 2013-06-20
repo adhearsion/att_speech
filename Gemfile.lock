@@ -18,6 +18,7 @@ GEM
       git (>= 1.2.5)
       rake
       rdoc
+    json (1.7.7)
     json (1.7.7-java)
     multi_json (1.7.3)
     multipart-post (1.2.0)
@@ -41,11 +42,12 @@ GEM
 
 PLATFORMS
   java
+  ruby
 
 DEPENDENCIES
   activesupport
   bundler (>= 1.0.0)
-  celluloid (>= 0.11.1, < 0.14.0)
+  celluloid (>= 0.11.1)
   fakeweb
   faraday (>= 0.8.1)
   hashie (>= 1.2.0)
