@@ -93,20 +93,20 @@ class ATTSpeech
 
   ##
   # Allows you to send a string or plain text file and return the text to speech result
-  # @param [String] string or file_contents to be processed
-  # @param [String] type of file or object to be processed, may be text/plain, or application/ssml+xml
+  # @param [String] text_data string or file_contents to be processed
+  # @param [String] options hash with options which will be send to AT&T Speech API
   #
   # @return [String] the bytes of the resulting response from the AT&T Speech API
-  def text_to_speech(file_contents, type='text/plain')
-    resource = "/speech/v3/textToSpeech"
+  def text_to_speech(text_data, options = {})
+    resource = '/speech/v3/textToSpeech'
+    params = {
+      :Authorization => "Bearer #{@access_token}",
+      :Content_Type  => 'text/plain',
+      :Accept        => 'audio/x-wav'
+    }.merge(options)
 
     begin
-      response = @connection.post( resource,
-                                   file_contents,
-                                   :Authorization => "Bearer #{@access_token}",
-                                   :Content_Type  => type,
-                                   :Accept        => 'audio/x-wav' )
-
+      response = @connection.post( resource, text_data, params )
       response.body
     rescue => e
       raise RuntimeError, e.to_s
