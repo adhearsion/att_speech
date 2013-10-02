@@ -47,12 +47,7 @@ class ATTSpeech
     @access_token  = ''
     @refresh_token = ''
 
-    if @scope == 'SPEECH'
-      create_connection 'application/json'
-    else
-      create_connection 'audio/x-wav'
-    end
-
+    create_connection
     get_tokens
 
     Actor.current
