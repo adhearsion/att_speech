@@ -18,6 +18,11 @@ describe "AttSpeech" do
                        :status => ['200', 'OK'],
                        :body   => "{\"Recognition\":{\"ResponseId\":\"2b0bdcf4301f5c4aba57e2765b59bcbe\",\"NBest\":[{\"WordScores\":[1,1],\"Confidence\":1,\"Grade\":\"accept\",\"ResultText\":\"Boston celtics.\",\"Words\":[\"Boston\",\"celtics.\"],\"LanguageId\":\"en-us\",\"Hypothesis\":\"Boston celtics.\"}]}}")
 
+  FakeWeb.register_uri(:post,
+                       "https://api.att.com/speech/v3/textToSpeech",
+                       :status => ['200', 'OK'],
+                       :body   => nil )
+
   let(:att_speech)      { att_speech = ATTSpeech.new('1234', 'abcd', 'SPEECH') }
   let(:att_speech_hash) { att_speech = ATTSpeech.new({ :api_key    => '1234',
                                                        :secret_key => 'abcd',
@@ -134,6 +139,27 @@ describe "AttSpeech" do
       sleep 0.5
       result[:recognition][:response_id].should eql '2b0bdcf4301f5c4aba57e2765b59bcbe'
       result[:recognition][:n_best][:confidence].should eql 1
+    end
+  end
+
+  context 'text to speech' do
+    it 'should request a TTS transaction' do
+      text = 'Hello brown cow'
+      result = att_speech.text_to_speech text
+      FakeWeb.last_request.body.should eql text
+      FakeWeb.last_request.get_fields('authorization').should eql ["Bearer 5678"]
+      FakeWeb.last_request.get_fields('content-type').should eql ["text/plain"]
+      FakeWeb.last_request.get_fields('accept').should eql ["audio/x-wav"]
+    end
+
+    it 'should request a TTS transaction with additional options' do
+      text = 'Hello brown cow'
+      result = att_speech.text_to_speech text, { :x_foo => 'bar' }
+      FakeWeb.last_request.body.should eql text
+      FakeWeb.last_request.get_fields('authorization').should eql ["Bearer 5678"]
+      FakeWeb.last_request.get_fields('content-type').should eql ["text/plain"]
+      FakeWeb.last_request.get_fields('accept').should eql ["audio/x-wav"]
+      FakeWeb.last_request.get_fields('x-foo').should eql ["bar"]
     end
   end
 end
