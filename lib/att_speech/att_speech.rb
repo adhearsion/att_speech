@@ -2,7 +2,7 @@ class ATTSpeech
   include Celluloid
   Celluloid.logger = nil
 
-  attr_reader :api_key, :secret_key, :access_token, :refresh_token, :base_url, :ssl_verify, :scope
+  attr_reader :api_key, :secret_key, :access_token, :refresh_token, :base_url, :ssl_verify, :scope, :timeout
 
   ##
   # Creates an ATTSpeech object
@@ -14,12 +14,14 @@ class ATTSpeech
   #   @option args [String] :scope the Authorization Scope for the AT&T Speech API
   #   @option args [String] :base_url the url for the AT&T Speech API, default is 'https://api.att.com'
   #   @option args [Boolean] :ssl_verify determines if the peer Cert is verified for SSL, default is true
-  # @overload initialize(api_key, secret_key, base_url='https://api.att.com')
+  #   @option args [Integer] :timeout timeout for http request in seconds, by default set to 60
+  # @overload initialize(api_key, secret_key, scope, base_url='https://api.att.com', ssl_verify = true, timeout = 60)
   #   @param [String] api_key the AT&T Speech API Key
   #   @param [String] secret_key the AT&T Speech API Secret Key
   #   @param [String] scope the Authorization Scope for the AT&T Speech API
   #   @param [String] base_url the url for the AT&T Speech API, default is 'https://api.att.com'
   #   @param [Boolean] ssl_verify determines if the peer Cert is verified for SSL, default is true
+  #   @param [Integer] timeout timeout for http request in seconds, by default set to 60
   #
   # @return [Object] an instance of ATTSpeech
   def initialize(*args)
@@ -31,14 +33,16 @@ class ATTSpeech
       @api_key    = args[0][:api_key]
       @secret_key = args[0][:secret_key]
       @scope      = args[0][:scope]
-      @base_url   = args[0][:base_url]   || base_url
+      @base_url   = args[0][:base_url] || base_url
       set_ssl_verify args[0][:ssl_verify]
+      @timeout    = args[0][:timeout] || 60
     else
       @api_key    = args[0]
       @secret_key = args[1]
       @scope      = args[2]
       @base_url   = args[3] || base_url
       set_ssl_verify args[4]
+      @timeout    = args[5] || 60
     end
 
     raise ArgumentError, "scope must be either 'SPEECH' or 'TTS'" unless (@scope == 'SPEECH') || (@scope == 'TTS')
@@ -117,6 +121,7 @@ class ATTSpeech
     @connection = Faraday.new(:url => @base_url, :ssl => { :verify => @ssl_verify }) do |faraday|
       faraday.headers['Accept'] = accept_type
       faraday.adapter           Faraday.default_adapter
+      faraday.options[:timeout] = @timeout
     end
   end
 
