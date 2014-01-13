@@ -16,26 +16,9 @@ Gem::Specification.new do |s|
     "LICENSE.txt",
     "README.md"
   ]
-  s.files = [
-    ".document",
-    ".rspec",
-    ".travis.yml",
-    "Gemfile",
-    "Gemfile.lock",
-    "LICENSE.txt",
-    "README.md",
-    "Rakefile",
-    "VERSION",
-    "att_speech.gemspec",
-    "examples/bostonSeltics.wav",
-    "examples/example.rb",
-    "examples/helloWorld.txt",
-    "lib/att_speech.rb",
-    "lib/att_speech/att_speech.rb",
-    "lib/att_speech/version.rb",
-    "spec/att_speech_spec.rb",
-    "spec/spec_helper.rb"
-  ]
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.homepage = "http://github.com/jsgoecke/att_speech"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
