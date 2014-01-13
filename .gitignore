@@ -15,6 +15,8 @@ doc
 # jeweler generated
 pkg
 
+Gemfile.lock
+
 # Have editor/IDE/OS specific files you need to ignore? Consider using a global gitignore: 
 #
 # * Create a file at ~/.gitignore
@@ -28,7 +30,7 @@ pkg
 #
 # For MacOS:
 #
-#.DS_Store
+.DS_Store
 
 # For TextMate
 #*.tmproj
@@ -40,7 +42,7 @@ pkg
 #.\#*
 
 # For vim:
-#*.swp
+.*.sw*
 
 # For redcar:
 #.redcar

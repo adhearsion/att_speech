@@ -17,7 +17,7 @@ require 'att_speech'
 
 att_speech = ATTSpeech.new({ :api_key    => ENV['ATT_SPEECH_KEY'],
                              :secret_key => ENV['ATT_SPEECH_SECRET'],
-                             :scope      => 'SPEECH' }) })
+                             :scope      => 'SPEECH' })
 
 # Read the audio file contents
 file_contents = File.read(File.expand_path(File.dirname(File.dirname(__FILE__))) + "/bostonSeltics.wav")
@@ -35,9 +35,13 @@ p future.value
 # from the calling context, better to have discreet actions contained in the block, such as inserting in a
 # datastore
 sleep 2
-att_speech.speech_to_text!(file_contents) { |transcription| p transcription }
+supervisor = ATTSpeech.supervise({ :api_key    => ENV['ATT_SPEECH_KEY'],
+                                   :secret_key => ENV['ATT_SPEECH_SECRET'],
+                                   :scope      => 'SPEECH' })
+supervisor.future.speech_to_text(file_contents)
+# do other stuff here
 sleep 5
-
+transcription = supervisor.value # returns immediately if the operation is complete, otherwise blocks until the value is ready
 
 def write_wav_file(audio_bytes)
   file_name = "ret_audio-#{Time.now.strftime('%Y%m%d-%H%M%S')}.wav"
