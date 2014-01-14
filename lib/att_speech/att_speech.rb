@@ -63,10 +63,9 @@ class ATTSpeech
   # @param [String] file_contents to be processed
   # @param [String] type of file to be processed, may be audio/wav, application/octet-stream or audio/amr
   # @param [String] speech_context to use to evaluate the audio BusinessSearch, Gaming, Generic, QuestionAndAnswer, SMS, SocialMedia, TV, VoiceMail, WebSearch
-  # @param [Block] block to be called when the transcription completes
   #
   # @return [Hash] the resulting response from the AT&T Speech API
-  def speech_to_text(file_contents, type='audio/wav', speech_context='Generic', &block)
+  def speech_to_text(file_contents, type='audio/wav', speech_context='Generic')
     resource = "/speech/v3/speechToText"
 
     if type == "application/octet-stream"
@@ -83,7 +82,6 @@ class ATTSpeech
                                    :Accept                    => 'application/json' )
 
       result = process_response(response)
-      block.call result if block_given?
       result
     rescue => e
       raise RuntimeError, e.to_s
