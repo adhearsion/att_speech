@@ -1,15 +1,17 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
+SCOPES = 'SPEECH%2CSTTC%2CTTS'
+
 describe "AttSpeech" do
   FakeWeb.allow_net_connect = false
 
   FakeWeb.register_uri(:post,
-                       "https://api.att.com/oauth/access_token?client_id=1234&client_secret=abcd&grant_type=client_credentials&scope=SPEECH",
+                       "https://api.att.com/oauth/access_token?client_id=1234&client_secret=abcd&grant_type=client_credentials&scope=#{SCOPES}",
                        :status => ['200', 'OK'],
                        :body   => '{"access_token":"5678","refresh_token":"wxyz"}')
 
   FakeWeb.register_uri(:post,
-                       "http://foobar.com/oauth/access_token?client_id=1234&client_secret=abcd&grant_type=client_credentials&scope=SPEECH",
+                       "http://foobar.com/oauth/access_token?client_id=1234&client_secret=abcd&grant_type=client_credentials&scope=#{SCOPES}",
                        :status => ['200', 'OK'],
                        :body   => '{"access_token":"5678","refresh_token":"wxyz"}')
 
@@ -23,10 +25,9 @@ describe "AttSpeech" do
                        :status => ['200', 'OK'],
                        :body   => nil )
 
-  let(:att_speech)      { att_speech = ATTSpeech.new('1234', 'abcd', 'SPEECH') }
+  let(:att_speech)      { att_speech = ATTSpeech.new('1234', 'abcd') }
   let(:att_speech_hash) { att_speech = ATTSpeech.new({ :api_key    => '1234',
-                                                       :secret_key => 'abcd',
-                                                       :scope      => 'SPEECH' })}
+                                                       :secret_key => 'abcd' })}
 
 
   describe 'initializing' do
@@ -34,23 +35,7 @@ describe "AttSpeech" do
       begin
         ATTSpeech.new
       rescue => e
-        e.to_s.should eql "Requires at least the api_key, secret_key, and scope when instatiating"
-      end
-    end
-
-    it "shoud raise an error of wrong scope when creating object without scope" do
-      begin
-        ATTSpeech.new('1234', 'abcd')
-      rescue => e
-        e.to_s.should eql "scope must be either 'SPEECH' or 'TTS'"
-      end
-    end
-
-    it "shoud raise an error of wrong scope when creating object with misspelled scope" do
-      begin
-        ATTSpeech.new('1234', 'abcd', 'misspelled scope')
-      rescue => e
-        e.to_s.should eql "scope must be either 'SPEECH' or 'TTS'"
+        e.to_s.should eql "Requires at least the api_key and secret_key when instatiating"
       end
     end
 
@@ -60,13 +45,12 @@ describe "AttSpeech" do
     end
 
     it 'should set the url to something different' do
-      as = ATTSpeech.new('1234', 'abcd', 'SPEECH', 'http://foobar.com', false)
+      as = ATTSpeech.new('1234', 'abcd', 'http://foobar.com', false)
       as.base_url.should   == 'http://foobar.com'
       as.ssl_verify.should == false
 
       as = ATTSpeech.new({ :api_key    => '1234',
                            :secret_key => 'abcd',
-                           :scope      => 'SPEECH',
                            :base_url   => 'http://foobar.com',
                            :ssl_verify => false })
       as.base_url.should   == 'http://foobar.com'

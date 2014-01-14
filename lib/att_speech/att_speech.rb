@@ -2,7 +2,7 @@ class ATTSpeech
   include Celluloid
   Celluloid.logger = nil
 
-  attr_reader :api_key, :secret_key, :access_token, :refresh_token, :base_url, :ssl_verify, :scope
+  attr_reader :api_key, :secret_key, :access_token, :refresh_token, :base_url, :ssl_verify
 
   ##
   # Creates an ATTSpeech object
@@ -11,47 +11,38 @@ class ATTSpeech
   #   @param [Hash] args the options to intantiate with
   #   @option args [String] :api_key the AT&T Speech API Key
   #   @option args [String] :secret_key the AT&T Speech API Secret Key
-  #   @option args [String] :scope the Authorization Scope for the AT&T Speech API
   #   @option args [String] :base_url the url for the AT&T Speech API, default is 'https://api.att.com'
   #   @option args [Boolean] :ssl_verify determines if the peer Cert is verified for SSL, default is true
   # @overload initialize(api_key, secret_key, base_url='https://api.att.com')
   #   @param [String] api_key the AT&T Speech API Key
   #   @param [String] secret_key the AT&T Speech API Secret Key
-  #   @param [String] scope the Authorization Scope for the AT&T Speech API
   #   @param [String] base_url the url for the AT&T Speech API, default is 'https://api.att.com'
   #   @param [Boolean] ssl_verify determines if the peer Cert is verified for SSL, default is true
   #
   # @return [Object] an instance of ATTSpeech
   def initialize(*args)
-    raise ArgumentError, "Requires at least the api_key, secret_key, and scope when instatiating" if args.size == 0
+    raise ArgumentError, "Requires at least the api_key and secret_key when instatiating" if args.size == 0
 
     base_url   = 'https://api.att.com'
 
     if args.size == 1 && args[0].instance_of?(Hash)
-      @api_key    = args[0][:api_key]
-      @secret_key = args[0][:secret_key]
-      @scope      = args[0][:scope]
-      @base_url   = args[0][:base_url]   || base_url
-      set_ssl_verify args[0][:ssl_verify]
+      args = args.shift
+      @api_key    = args[:api_key]
+      @secret_key = args[:secret_key]
+      @base_url   = args[:base_url]   || base_url
+      set_ssl_verify args[:ssl_verify]
     else
-      @api_key    = args[0]
-      @secret_key = args[1]
-      @scope      = args[2]
-      @base_url   = args[3] || base_url
-      set_ssl_verify args[4]
+      @api_key    = args.shift
+      @secret_key = args.shift
+      @base_url   = args.shift || base_url
+      set_ssl_verify args.shift
     end
-
-    raise ArgumentError, "scope must be either 'SPEECH' or 'TTS'" unless (@scope == 'SPEECH') || (@scope == 'TTS')
 
     @grant_type    = 'client_credentials'
     @access_token  = ''
     @refresh_token = ''
 
-    if @scope == 'SPEECH'
-      create_connection 'application/json'
-    else
-      create_connection 'audio/x-wav'
-    end
+    create_connection 'application/json'
 
     get_tokens
 
@@ -133,7 +124,7 @@ class ATTSpeech
         request.params['client_id']     = @api_key
         request.params['client_secret'] = @secret_key
         request.params['grant_type']    = @grant_type
-        request.params['scope']         = @scope
+        request.params['scope']         = 'SPEECH,STTC,TTS'
       end
 
       result = process_response(response)
