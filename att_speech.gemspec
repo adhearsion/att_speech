@@ -8,10 +8,9 @@ Gem::Specification.new do |s|
   s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Jason Goecke, Peter Wilson"]
-  s.date = "2013-05-09"
+  s.authors = ["Jason Goecke", "Peter Wilson", "Ben Klang"]
   s.description = "A Ruby library for consuming v3 of the AT&T Speech API for speech->text, and text->speech. Takes in either .wav or specific other audio files, and returns a text string of the spoken words. Can also take in either a text string or .txt file and returns a string of bytes from which a .wav file can be created of the spoken text."
-  s.email = "jason@goecke.net"
+  s.email = "dev&adhearsion.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
