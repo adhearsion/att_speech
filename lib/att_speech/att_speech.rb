@@ -1,3 +1,7 @@
+# encoding: utf-8
+
+require 'core_ext/att_multipart'
+
 class ATTSpeech
   include Celluloid
   Celluloid.logger = nil
@@ -56,27 +60,37 @@ class ATTSpeech
   # @param [String] speech_context to use to evaluate the audio BusinessSearch, Gaming, Generic, QuestionAndAnswer, SMS, SocialMedia, TV, VoiceMail, WebSearch
   #
   # @return [Hash] the resulting response from the AT&T Speech API
-  def speech_to_text(file_contents, type='audio/wav', speech_context='Generic')
+  def speech_to_text(file_contents, type='audio/wav', speech_context='Generic', options = {})
     resource = "/speech/v3/speechToText"
 
+    # FIXME: Is this necessary?
     if type == "application/octet-stream"
       type = "audio/amr"
     end
 
-    begin
-      response = @connection.post( resource,
-                                   file_contents,
-                                   :Authorization             => "Bearer #{@access_token}",
-                                   :Content_Transfer_Encoding => 'chunked',
-                                   :X_SpeechContext           => speech_context,
-                                   :Content_Type              => type,
-                                   :Accept                    => 'application/json' )
+    headers = {
+      :Authorization             => "Bearer #{@access_token}",
+      :Content_Transfer_Encoding => 'chunked',
+      :Accept                    => 'application/json'
+    }
 
-      result = process_response(response)
-      result
-    rescue => e
-      raise RuntimeError, e.to_s
+    if options.has_key?(:grammar)
+      # Assume this is a Speech-To-Text-Custom query
+      resource << 'Custom'
+      options[:grammar] = "<?xml version=\"1.0\"?>\n#{options[:grammar]}"
+      body = {
+        'x-grammar' => Faraday::UploadIO.new(StringIO.new(options[:grammar]), 'application/srgs+xml'),
+        'x-voice'   => Faraday::UploadIO.new(StringIO.new(file_contents), type)
+      }
+    else
+      headers[:X_SpeechContext] = speech_context
+      body = file_contents
     end
+
+    response = @connection.post resource, body, headers
+
+    result = process_response(response)
+    result
   end
 
 
@@ -110,7 +124,8 @@ class ATTSpeech
   def create_connection(accept_type='application/json')
     @connection = Faraday.new(:url => @base_url, :ssl => { :verify => @ssl_verify }) do |faraday|
       faraday.headers['Accept'] = accept_type
-      faraday.adapter           Faraday.default_adapter
+      faraday.request :att_multipart
+      faraday.adapter Faraday.default_adapter
     end
   end
 
