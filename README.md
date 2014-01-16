@@ -70,4 +70,6 @@ write_wav_file(future.value)
 
 ## Copyright
 
-Copyright (c) 2013 Jason Goecke. See LICENSE.txt for further details.
+Copyright (c) 2013 Jason Goecke.
+Copyright (c) 2014 Ben Klang.
+See LICENSE.txt for further details.
