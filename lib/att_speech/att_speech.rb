@@ -72,22 +72,22 @@ class ATTSpeech
       type = "audio/amr"
     end
 
-    headers = {
-      :Authorization             => "Bearer #{@access_token}",
-      :Content_Transfer_Encoding => 'chunked',
-      :Accept                    => 'application/json'
-    }
+    headers = { :Authorization => "Bearer #{@access_token}", :Accept => 'application/json' }
 
     if options.has_key?(:grammar)
       # Assume this is a Speech-To-Text-Custom query
       resource << 'Custom'
       options[:grammar] = "<?xml version=\"1.0\"?>\n#{options[:grammar]}"
       body = {
-        'x-grammar' => Faraday::UploadIO.new(StringIO.new(options[:grammar]), 'application/srgs+xml'),
-        'x-voice'   => Faraday::UploadIO.new(StringIO.new(file_contents), type)
+          'x-grammar' => Faraday::UploadIO.new(StringIO.new(options[:grammar]), 'application/srgs+xml'),
+          'x-voice'   => Faraday::UploadIO.new(StringIO.new(file_contents), type)
       }
     else
-      headers[:X_SpeechContext] = speech_context
+      headers.merge!({
+        :Content_Length => file_contents.length.to_s,
+        :Content_Type => type,
+        :X_SpeechContext => speech_context
+      })
       body = file_contents
     end
 
