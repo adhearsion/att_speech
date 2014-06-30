@@ -6,7 +6,7 @@ class ATTSpeech
   include Celluloid
   Celluloid.logger = nil
 
-  attr_reader :api_key, :secret_key, :access_token, :refresh_token, :base_url, :ssl_verify
+  attr_reader :api_key, :secret_key, :access_token, :refresh_token, :base_url, :ssl_verify, :timeout
 
   ##
   # Creates an ATTSpeech object
@@ -17,11 +17,13 @@ class ATTSpeech
   #   @option args [String] :secret_key the AT&T Speech API Secret Key
   #   @option args [String] :base_url the url for the AT&T Speech API, default is 'https://api.att.com'
   #   @option args [Boolean] :ssl_verify determines if the peer Cert is verified for SSL, default is true
+  #   @option args [Integer] :timeout timeout for http request in seconds, by default set to 60
   # @overload initialize(api_key, secret_key, base_url='https://api.att.com')
   #   @param [String] api_key the AT&T Speech API Key
   #   @param [String] secret_key the AT&T Speech API Secret Key
   #   @param [String] base_url the url for the AT&T Speech API, default is 'https://api.att.com'
   #   @param [Boolean] ssl_verify determines if the peer Cert is verified for SSL, default is true
+  #   @param [Integer] timeout timeout for http request in seconds, by default set to 60
   #
   # @return [Object] an instance of ATTSpeech
   def initialize(*args)
@@ -35,11 +37,13 @@ class ATTSpeech
       @secret_key = args[:secret_key]
       @base_url   = args[:base_url]   || base_url
       set_ssl_verify args[:ssl_verify]
+      @timeout    = args[:timeout] || 60
     else
       @api_key    = args.shift
       @secret_key = args.shift
       @base_url   = args.shift || base_url
       set_ssl_verify args.shift
+      @timeout    = args.shift || 60
     end
 
     @grant_type    = 'client_credentials'
@@ -126,6 +130,7 @@ class ATTSpeech
       faraday.headers['Accept'] = accept_type
       faraday.request :att_multipart
       faraday.adapter Faraday.default_adapter
+      faraday.options[:timeout] = @timeout
     end
   end
 
